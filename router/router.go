@@ -1,7 +1,6 @@
 package router
 
 import (
-	"fmt"
 	"net/http"
 	"path"
 )
@@ -57,7 +56,6 @@ func (r *router) Wrap(m Middleware) {
 func (r *router) Match(req *http.Request) http.Handler {
 	h := r.tree.match(req)
 	if h == nil {
-		fmt.Println("g pethuk", req.Method, req.URL.String())
 		return nil
 	}
 	for _, m := range r.middleware {
