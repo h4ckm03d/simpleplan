@@ -1,16 +1,16 @@
-package store_test
+package repo_test
 
 import (
 	"testing"
 
 	"github.com/h4ckm03d/simpleplan/model"
-	"github.com/h4ckm03d/simpleplan/store"
+	"github.com/h4ckm03d/simpleplan/repo"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestPlanRepo_Create(t *testing.T) {
 	// Create plan repo
-	r := store.NewPlanRepo()
+	r := repo.NewPlanRepo()
 
 	// Create plan
 	plan := &model.Plan{
@@ -29,7 +29,7 @@ func TestPlanRepo_Create(t *testing.T) {
 
 func TestPlanRepo_Get(t *testing.T) {
 	// Create plan repo
-	r := store.NewPlanRepo()
+	r := repo.NewPlanRepo()
 
 	// Create plan
 	plan := &model.Plan{
@@ -57,7 +57,7 @@ func TestPlanRepo_Get(t *testing.T) {
 
 func TestPlanRepo_Update(t *testing.T) {
 	// Create plan repo
-	r := store.NewPlanRepo()
+	r := repo.NewPlanRepo()
 
 	// Create plan
 	plan := &model.Plan{
@@ -96,7 +96,7 @@ func TestPlanRepo_Update(t *testing.T) {
 func TestPlanRepo_Delete(t *testing.T) {
 
 	// Create plan repo
-	r := store.NewPlanRepo()
+	r := repo.NewPlanRepo()
 
 	// Create plan
 	plan := &model.Plan{
@@ -129,7 +129,7 @@ func TestPlanRepo_Delete(t *testing.T) {
 func TestPlanRepo_GetAll(t *testing.T) {
 
 	// Create plan repo
-	r := store.NewPlanRepo()
+	r := repo.NewPlanRepo()
 
 	// Create plan
 	plan := &model.Plan{
@@ -146,7 +146,7 @@ func TestPlanRepo_GetAll(t *testing.T) {
 	assert.Equal(t, plan.Name, "Test plan")
 
 	// Get all plans
-	plans, err := r.GetAll(1, 1)
+	plans, err := r.GetAll(1, 0)
 	assert.NoError(t, err)
 	assert.NotNil(t, plans)
 	assert.Equal(t, len(plans), 1)

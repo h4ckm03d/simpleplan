@@ -8,6 +8,8 @@ import (
 	"os"
 	"time"
 
+	"github.com/h4ckm03d/simpleplan/port"
+	"github.com/h4ckm03d/simpleplan/repo"
 	"github.com/h4ckm03d/simpleplan/router"
 )
 
@@ -32,6 +34,7 @@ type config struct {
 type application struct {
 	config config
 	logger *log.Logger
+	port.PlanRepo
 }
 
 func main() {
@@ -52,8 +55,9 @@ func main() {
 	// Declare an instance of the application struct, containing the config struct and
 	// the logger.
 	app := &application{
-		config: cfg,
-		logger: logger,
+		config:   cfg,
+		logger:   logger,
+		PlanRepo: repo.NewPlanRepo(),
 	}
 
 	// Declare a HTTP server with some sensible timeout settings, which listens on the

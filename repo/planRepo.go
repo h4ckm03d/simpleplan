@@ -1,7 +1,6 @@
-package store
+package repo
 
 import (
-	"errors"
 	"sort"
 	"sync"
 	"time"
@@ -17,11 +16,11 @@ type PlanRepo struct {
 	m      sync.Mutex
 }
 
-var _ port.Storage = &PlanRepo{}
+var _ port.PlanRepo = &PlanRepo{}
 
 func NewPlanRepo() *PlanRepo {
 	return &PlanRepo{
-		Id:     1,
+		Id:     0,
 		Data:   make(map[int]*model.Plan),
 		ListId: []int{},
 	}
@@ -43,7 +42,7 @@ func (r *PlanRepo) Get(id int) (*model.Plan, error) {
 	defer r.m.Unlock()
 	plan, ok := r.Data[int(id)]
 	if !ok {
-		return nil, errors.New("not found")
+		return nil, model.ErrNotFound
 	}
 
 	return plan, nil
@@ -54,7 +53,7 @@ func (r *PlanRepo) Update(plan *model.Plan) (*model.Plan, error) {
 	defer r.m.Unlock()
 	_, found := r.Data[plan.ID]
 	if plan.ID == 0 || plan.ID > r.Id || !found {
-		return nil, errors.New("not found")
+		return nil, model.ErrNotFound
 	}
 
 	plan.UpdatedAt = time.Now()
@@ -66,7 +65,7 @@ func (r *PlanRepo) Delete(id int) error {
 	r.m.Lock()
 	defer r.m.Unlock()
 	if _, found := r.Data[id]; !found {
-		return errors.New("not found")
+		return model.ErrNotFound
 	}
 
 	delete(r.Data, int(id))
@@ -80,14 +79,19 @@ func (r *PlanRepo) GetAll(limit, page int) ([]*model.Plan, error) {
 	r.m.Lock()
 	defer r.m.Unlock()
 	plans := make([]*model.Plan, 0)
+	totalLen := len(r.ListId)
 
-	start := (page - 1) * limit
+	start := page * limit
 	end := start + limit
-	if start >= len(r.ListId) {
+	if start >= totalLen {
 		return plans, nil
 	}
 
-	for ; start < end && start < len(r.ListId); start++ {
+	if end > totalLen {
+		end = totalLen
+	}
+
+	for ; start < end && start < totalLen; start++ {
 		if plan, ok := r.Data[r.ListId[start]]; ok {
 			plans = append(plans, plan)
 		}

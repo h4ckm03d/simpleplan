@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/h4ckm03d/simpleplan/model"
 	"github.com/h4ckm03d/simpleplan/router"
 )
 
@@ -36,6 +37,12 @@ func errHandler(f func(http.ResponseWriter, *http.Request) error) http.HandlerFu
 
 		if err != nil {
 			errMessage = err.Error()
+			switch err.Error() {
+			case model.ErrNotFound.Error():
+				w.WriteHeader(http.StatusNotFound)
+			default:
+				w.WriteHeader(http.StatusBadRequest)
+			}
 		}
 
 		json.NewEncoder(log.Writer()).Encode(logRequest{
