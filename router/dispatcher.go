@@ -42,6 +42,7 @@ type dispatcher struct {
 func (d *dispatcher) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	// Match
 	for _, r := range d.routes {
+
 		// Found
 		if h := r.Match(req); h != nil {
 			// Add middleware
@@ -56,6 +57,7 @@ func (d *dispatcher) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 			return
 		}
 	}
+
 	w.WriteHeader(http.StatusNotFound)
 	// 404 Not Found
 	return

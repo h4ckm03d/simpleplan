@@ -10,31 +10,31 @@ import (
 
 // node represents each path part in a route and constructs a tree
 type node struct {
-	path     string
-	handler  map[string]http.Handler
+	path string
+	http.Handler
 	parent   *node
 	children []*node
 }
 
 // rootNode is a helper function to initialize the root "/" node for any tree.
-func rootNode(method, route string, handler http.Handler) *node {
+func rootNode(route string, handler http.Handler) *node {
 	n := &node{
 		path:     "/",
-		handler:  map[string]http.Handler{},
+		Handler:  handler,
 		children: make([]*node, 0),
 	}
 
-	n.add(method, route, handler)
+	n.add(route, handler)
 
 	return n
 }
 
 // add constructs the children tree for the current node matching the route provided.
 // It sets the http.Handler to the final element.
-func (n *node) add(method, route string, handler http.Handler) {
+func (n *node) add(route string, handler http.Handler) {
 	// Root and matches
 	if route == n.path || n.path == "*" {
-		n.handler[method] = handler
+		n.Handler = handler
 		return
 	}
 
@@ -56,15 +56,15 @@ func (n *node) add(method, route string, handler http.Handler) {
 			ch := &node{
 				path:     remain[0],
 				children: make([]*node, 0),
-				handler:  map[string]http.Handler{},
+				Handler:  handler,
 				parent:   nn,
 			}
 
 			// Go deeper
 			if len(remain) > 1 {
-				ch.add(method, strings.Join(remain[1:], "/"), handler)
+				ch.add(strings.Join(remain[1:], "/"), handler)
 			} else {
-				ch.handler[method] = handler
+				ch.Handler = handler
 			}
 
 			// Save route
@@ -99,9 +99,8 @@ func (n *node) match(r *http.Request) http.Handler {
 	if n.path != "/" {
 		return nil
 	}
-
 	if r.URL.Path == "/" || r.URL.Path == "" {
-		return n.handler[r.Method]
+		return n.Handler
 	}
 
 	// Create parameters storage
@@ -150,7 +149,7 @@ func (n *node) matchChild(part string, r *http.Request, params map[string]string
 				if len(part) == (i + 1) {
 					// Set last param and return
 					params[ch.path[1:]] = part[:i+1]
-					return ch.handler[r.Method]
+					return ch.Handler
 				}
 
 				// Set param
@@ -166,7 +165,7 @@ func (n *node) matchChild(part string, r *http.Request, params map[string]string
 			// Last route part
 			if len(part) == (i + 1) {
 				if part[:i+1] == ch.path {
-					return ch.handler[r.Method]
+					return ch.Handler
 				}
 			}
 
@@ -183,7 +182,7 @@ func (n *node) matchChild(part string, r *http.Request, params map[string]string
 		// Check for catch-all routes.
 		for _, ch := range n.children {
 			if ch.path == "*" {
-				return ch.handler[r.Method]
+				return ch.Handler
 			}
 		}
 

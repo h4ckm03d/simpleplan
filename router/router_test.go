@@ -12,7 +12,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 func TestRootMatch(t *testing.T) {
 	// Create route
 	r := New("/")
-	r.Add("GET", "/", http.HandlerFunc(handler))
+	r.Add("/", http.HandlerFunc(handler))
 
 	// Matching routes
 	matches := []string{"/", ""}
@@ -29,8 +29,8 @@ func TestRootMatch(t *testing.T) {
 
 func TestRouteMatch(t *testing.T) {
 	r := New("/v1")
-	r.Add("GET", "/test", http.HandlerFunc(handler))
-	r.Add("GET", "/test/1/2/3/4/5/6", http.HandlerFunc(handler))
+	r.Add("/test", http.HandlerFunc(handler))
+	r.Add("/test/1/2/3/4/5/6", http.HandlerFunc(handler))
 
 	matches := []string{
 		"http://example.com/v1/test",
@@ -67,11 +67,11 @@ func TestRouteMatch(t *testing.T) {
 
 func TestRouteParam(t *testing.T) {
 	r := New("/")
-	r.Add("GET", "/:test", http.HandlerFunc(handler))
-	r.Add("GET", "/:test/1", http.HandlerFunc(handler))
-	r.Add("GET", "/:test/1/2", http.HandlerFunc(handler))
-	r.Add("GET", "/1/2/:param", http.HandlerFunc(handler))
-	r.Add("GET", "/1/2/:param1/3/4/:param2", http.HandlerFunc(handler))
+	r.Add("/:test", http.HandlerFunc(handler))
+	r.Add("/:test/1", http.HandlerFunc(handler))
+	r.Add("/:test/1/2", http.HandlerFunc(handler))
+	r.Add("/1/2/:param", http.HandlerFunc(handler))
+	r.Add("/1/2/:param1/3/4/:param2", http.HandlerFunc(handler))
 
 	req, _ := http.NewRequest("GET", "http://example.com/value", nil)
 	h := r.Match(req)
@@ -120,10 +120,10 @@ func TestRouteParam(t *testing.T) {
 
 func TestCatchAllRoute(t *testing.T) {
 	r := New("/")
-	r.Add("GET", "/:test", http.HandlerFunc(handler))
-	r.Add("GET", "/:test/1/*", http.HandlerFunc(handler))
-	r.Add("GET", "/1/2/*", http.HandlerFunc(handler))
-	r.Add("GET", "/wrong/but/*/valid", http.HandlerFunc(handler))
+	r.Add("/:test", http.HandlerFunc(handler))
+	r.Add("/:test/1/*", http.HandlerFunc(handler))
+	r.Add("/1/2/*", http.HandlerFunc(handler))
+	r.Add("/wrong/but/*/valid", http.HandlerFunc(handler))
 
 	req, _ := http.NewRequest("GET", "http://example.com/value", nil)
 	h := r.Match(req)
@@ -168,7 +168,7 @@ func paramHandler(w http.ResponseWriter, r *http.Request) {
 
 func TestParam(t *testing.T) {
 	r := New("/")
-	r.Add("GET", "/:param", http.HandlerFunc(paramHandler))
+	r.Add("/:param", http.HandlerFunc(paramHandler))
 
 	req, _ := http.NewRequest("GET", "http://example.com/value", nil)
 	h := r.Match(req)
@@ -181,7 +181,7 @@ func TestParam(t *testing.T) {
 
 func TestGetWrongParam(t *testing.T) {
 	r := New("/")
-	r.Add("GET", "/:param", http.HandlerFunc(paramHandler))
+	r.Add("/:param", http.HandlerFunc(paramHandler))
 
 	req, _ := http.NewRequest("GET", "http://example.com/value", nil)
 	h := r.Match(req)

@@ -41,7 +41,7 @@ func errHandler(f func(http.ResponseWriter, *http.Request) error) http.HandlerFu
 		json.NewEncoder(log.Writer()).Encode(logRequest{
 			Method:   r.Method,
 			Path:     r.URL.Path,
-			Duration: time.Since(start).Milliseconds(),
+			Duration: time.Since(start).Microseconds(),
 			Err:      errMessage,
 		})
 	}
@@ -51,9 +51,8 @@ func (app *application) routes() router.Router {
 	// Create route
 	r := router.New("/v1")
 	r.Wrap(restMiddleware)
-	r.Add(http.MethodGet, "/health", errHandler(app.healthcheckHandler))
-	r.Add(http.MethodGet, "/plan", errHandler(app.getAllPlanHandler))
-	r.Add(http.MethodGet, "/plan/:id", errHandler(app.getPlanHandler))
-
+	r.Add("/health", errHandler(app.healthcheckHandler))
+	r.Add("/plan", errHandler(app.planHandler))
+	r.Add("/plan/:id", errHandler(app.planMutationHandler))
 	return r
 }

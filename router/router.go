@@ -12,7 +12,7 @@ type Middleware func(http.Handler) http.Handler
 // to be able to match and execute requests.
 type Router interface {
 	// Add takes a route path and a handler to store for further matching
-	Add(method string, path string, handler http.Handler)
+	Add(path string, handler http.Handler)
 
 	// Wrap takes a Middleware to wrap all handlers in order (from inside out) at router level.
 	Wrap(Middleware)
@@ -28,7 +28,7 @@ func New(prefix string) Router {
 	// Create router
 	return &router{
 		prefix:     prefix,
-		tree:       rootNode("GET", "/", nil),
+		tree:       rootNode("/", nil),
 		middleware: make([]Middleware, 0),
 	}
 }
@@ -45,8 +45,8 @@ type router struct {
 	middleware []Middleware
 }
 
-func (r *router) Add(method, route string, h http.Handler) {
-	r.tree.add(method, path.Join(r.prefix, route), h)
+func (r *router) Add(route string, h http.Handler) {
+	r.tree.add(path.Join(r.prefix, route), h)
 }
 
 func (r *router) Wrap(m Middleware) {

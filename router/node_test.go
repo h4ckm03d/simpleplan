@@ -10,12 +10,12 @@ type emptyHandler struct{}
 func (e emptyHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {}
 
 func TestAdd(t *testing.T) {
-	root := rootNode(http.MethodGet, "/", emptyHandler{})
+	root := rootNode("/", emptyHandler{})
 	if root.path != "/" {
 		t.Errorf("root.path should be '/'. Got %s", root.path)
 	}
 
-	root.add("GET", "/some/route/with/five/parts", emptyHandler{})
+	root.add("/some/route/with/five/parts", emptyHandler{})
 	if len(root.children) != 1 {
 		for _, ch := range root.children {
 			t.Errorf("Error data: %s", ch.path)
@@ -23,7 +23,7 @@ func TestAdd(t *testing.T) {
 		t.Fatalf("root.children should have 1 items. Got %d", len(root.children))
 	}
 
-	root.add("GET", "/test/action", emptyHandler{})
+	root.add("/test/action", emptyHandler{})
 	if len(root.children) != 2 {
 		for _, ch := range root.children {
 			t.Errorf("Error data: %s", ch.path)
@@ -34,12 +34,12 @@ func TestAdd(t *testing.T) {
 
 func TestBuildPath(t *testing.T) {
 
-	root := rootNode("GET", "/", emptyHandler{})
+	root := rootNode("/", emptyHandler{})
 	if root.buildPath() != "/" {
 		t.Errorf("root.buildPath() should be '/'. Got %s", root.buildPath())
 	}
 
-	root = rootNode("GET", "/test", emptyHandler{})
+	root = rootNode("/test", emptyHandler{})
 	if root.path != "/" {
 		t.Errorf("root.path should be '/'. Got %s", root.path)
 	}
@@ -56,7 +56,7 @@ func TestBuildPath(t *testing.T) {
 		t.Errorf("root.children[0].path should be '/test'. Got %s", root.children[0].path)
 	}
 
-	root.add("GET", "/test/action", emptyHandler{})
+	root.add("/test/action", emptyHandler{})
 	if len(root.children) != 1 {
 		t.Fatalf("root.children should have 1 items after adding another route with same prefix. Got %d", len(root.children))
 	}

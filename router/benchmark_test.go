@@ -22,7 +22,7 @@ func helloNames(w http.ResponseWriter, r *http.Request) {
 func BenchmarkRootMatch(b *testing.B) {
 	// Create route
 	r := New("/")
-	r.Add("GET", "/", http.HandlerFunc(hello))
+	r.Add("/", http.HandlerFunc(hello))
 
 	req, _ := http.NewRequest("GET", "http://test.com/", nil)
 
@@ -35,7 +35,7 @@ func BenchmarkRootMatch(b *testing.B) {
 func BenchmarkPathMatch(b *testing.B) {
 	// Create route
 	r := New("/")
-	r.Add("GET", "/some/path/to/match", http.HandlerFunc(hello))
+	r.Add("/some/path/to/match", http.HandlerFunc(hello))
 
 	req, _ := http.NewRequest("GET", "http://test.com/some/path/to/match", nil)
 
@@ -48,7 +48,7 @@ func BenchmarkPathMatch(b *testing.B) {
 func BenchmarkParamMatch(b *testing.B) {
 	// Create route
 	r := New("/")
-	r.Add("GET", "/hello/:name", http.HandlerFunc(helloName))
+	r.Add("/hello/:name", http.HandlerFunc(helloName))
 
 	req, _ := http.NewRequest("GET", "http://test.com/hello/joe", nil)
 
@@ -61,7 +61,7 @@ func BenchmarkParamMatch(b *testing.B) {
 func BenchmarkMultiParamMatch(b *testing.B) {
 	// Create route
 	r := New("/")
-	r.Add("GET", "/hello/:first-name/:middle-name/:last-name", http.HandlerFunc(helloNames))
+	r.Add("/hello/:first-name/:middle-name/:last-name", http.HandlerFunc(helloNames))
 
 	req, _ := http.NewRequest("GET", "http://test.com/hello/joe/x/smith", nil)
 
@@ -74,7 +74,7 @@ func BenchmarkMultiParamMatch(b *testing.B) {
 func BenchmarkRootDispatch(b *testing.B) {
 	// Create route
 	r := New("/")
-	r.Add("GET", "/", http.HandlerFunc(hello))
+	r.Add("/", http.HandlerFunc(hello))
 	d := Build(r)
 
 	req, _ := http.NewRequest("GET", "http://test.com", nil)
@@ -89,7 +89,7 @@ func BenchmarkRootDispatch(b *testing.B) {
 func BenchmarkParamDispatch(b *testing.B) {
 	// Create route
 	r := New("/")
-	r.Add("GET", "/hello/:name", http.HandlerFunc(helloName))
+	r.Add("/hello/:name", http.HandlerFunc(helloName))
 	d := Build(r)
 
 	req, _ := http.NewRequest("GET", "http://test.com/hello/joe", nil)
@@ -104,7 +104,7 @@ func BenchmarkParamDispatch(b *testing.B) {
 func BenchmarkMultiParamDispatch(b *testing.B) {
 	// Create route
 	r := New("/")
-	r.Add("GET", "/hello/:first-name/:middle-name/:last-name", http.HandlerFunc(helloNames))
+	r.Add("/hello/:first-name/:middle-name/:last-name", http.HandlerFunc(helloNames))
 	d := Build(r)
 
 	req, _ := http.NewRequest("GET", "http://test.com/hello/joe/x/smith", nil)

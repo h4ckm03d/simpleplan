@@ -13,13 +13,13 @@ func dhandler(w http.ResponseWriter, r *http.Request) {
 
 func TestDispatcher(t *testing.T) {
 	r1 := New("/v1/")
-	r1.Add(http.MethodGet, "/test", http.HandlerFunc(dhandler))
-	r1.Add(http.MethodGet, "/test/1/2/3/4/5/6", http.HandlerFunc(dhandler))
+	r1.Add("/test", http.HandlerFunc(dhandler))
+	r1.Add("/test/1/2/3/4/5/6", http.HandlerFunc(dhandler))
 	d := Build(r1)
 
 	r2 := New("/v2")
-	r2.Add(http.MethodGet, "/test", http.HandlerFunc(dhandler))
-	r2.Add(http.MethodGet, "/test/1/2/3/4/5/6", http.HandlerFunc(dhandler))
+	r2.Add("/test", http.HandlerFunc(dhandler))
+	r2.Add("/test/1/2/3/4/5/6", http.HandlerFunc(dhandler))
 	d.Add(r2)
 
 	if len(d.(*dispatcher).routes) != 2 {
@@ -29,7 +29,7 @@ func TestDispatcher(t *testing.T) {
 
 func TestDispatcherParam(t *testing.T) {
 	r := New("/")
-	r.Add(http.MethodGet, "/hello/:name", http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+	r.Add("/hello/:name", http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
 		res.Write([]byte("Hello " + Param(req, "name")))
 	}))
 
@@ -56,7 +56,7 @@ func TestMiddlewareFlow(t *testing.T) {
 
 	r := New("/")
 
-	r.Add(http.MethodGet, "/", http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+	r.Add("/", http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
 		res.Write([]byte("Handler"))
 	}))
 
@@ -105,7 +105,7 @@ func TestMiddlewareCancel(t *testing.T) {
 
 	r := New("/")
 
-	r.Add(http.MethodGet, "/", http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+	r.Add("/", http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
 		res.Write([]byte("Handler"))
 	}))
 
@@ -149,8 +149,8 @@ func TestMiddlewareCancel(t *testing.T) {
 
 func TestConcurrentDispatch(t *testing.T) {
 	r := New("/test")
-	r.Add(http.MethodGet, "/one/:param", http.HandlerFunc(dhandler))
-	r.Add(http.MethodGet, "/two/:param", http.HandlerFunc(dhandler))
+	r.Add("/one/:param", http.HandlerFunc(dhandler))
+	r.Add("/two/:param", http.HandlerFunc(dhandler))
 
 	d := Build(r)
 
