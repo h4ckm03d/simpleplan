@@ -10,8 +10,8 @@ import (
 
 // node represents each path part in a route and constructs a tree
 type node struct {
-	path string
-	http.Handler
+	path     string
+	handler  http.Handler
 	parent   *node
 	children []*node
 }
@@ -20,7 +20,6 @@ type node struct {
 func rootNode(route string, handler http.Handler) *node {
 	n := &node{
 		path:     "/",
-		Handler:  handler,
 		children: make([]*node, 0),
 	}
 
@@ -34,7 +33,7 @@ func rootNode(route string, handler http.Handler) *node {
 func (n *node) add(route string, handler http.Handler) {
 	// Root and matches
 	if route == n.path || n.path == "*" {
-		n.Handler = handler
+		n.handler = handler
 		return
 	}
 
@@ -56,7 +55,6 @@ func (n *node) add(route string, handler http.Handler) {
 			ch := &node{
 				path:     remain[0],
 				children: make([]*node, 0),
-				Handler:  handler,
 				parent:   nn,
 			}
 
@@ -64,7 +62,7 @@ func (n *node) add(route string, handler http.Handler) {
 			if len(remain) > 1 {
 				ch.add(strings.Join(remain[1:], "/"), handler)
 			} else {
-				ch.Handler = handler
+				ch.handler = handler
 			}
 
 			// Save route
@@ -99,8 +97,9 @@ func (n *node) match(r *http.Request) http.Handler {
 	if n.path != "/" {
 		return nil
 	}
+
 	if r.URL.Path == "/" || r.URL.Path == "" {
-		return n.Handler
+		return n.handler
 	}
 
 	// Create parameters storage
@@ -149,7 +148,7 @@ func (n *node) matchChild(part string, r *http.Request, params map[string]string
 				if len(part) == (i + 1) {
 					// Set last param and return
 					params[ch.path[1:]] = part[:i+1]
-					return ch.Handler
+					return ch.handler
 				}
 
 				// Set param
@@ -165,7 +164,7 @@ func (n *node) matchChild(part string, r *http.Request, params map[string]string
 			// Last route part
 			if len(part) == (i + 1) {
 				if part[:i+1] == ch.path {
-					return ch.Handler
+					return ch.handler
 				}
 			}
 
@@ -182,7 +181,7 @@ func (n *node) matchChild(part string, r *http.Request, params map[string]string
 		// Check for catch-all routes.
 		for _, ch := range n.children {
 			if ch.path == "*" {
-				return ch.Handler
+				return ch.handler
 			}
 		}
 
