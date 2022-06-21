@@ -77,6 +77,12 @@ func Test_main(t *testing.T) {
 			data:   nil,
 			status: http.StatusOK,
 		},
+		"DELETE /v1/plan/mbuh": {
+			want:   nil,
+			seed:   []*model.Plan{{Name: "Test plan"}},
+			data:   nil,
+			status: http.StatusBadRequest,
+		},
 	}
 
 	for name, tt := range tests {

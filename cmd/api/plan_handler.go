@@ -3,7 +3,6 @@ package main
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
 	"net/http"
 	"strconv"
 
@@ -114,7 +113,5 @@ func (app *application) deletePlanHandler(w http.ResponseWriter, r *http.Request
 		return err
 	}
 
-	fmt.Println("got id:", id)
-
-	return nil
+	return app.PlanRepo.Delete(id)
 }
