@@ -25,7 +25,6 @@ func restMiddleware(next http.Handler) http.Handler {
 
 		// Continue flow
 		next.ServeHTTP(w, r)
-
 	})
 }
 

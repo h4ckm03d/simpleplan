@@ -14,22 +14,24 @@ type PlanRepo struct {
 	Data   map[int]*model.Plan
 	ListId []int
 	m      sync.Mutex
+	port.TimeProvider
 }
 
 var _ port.PlanRepo = &PlanRepo{}
 
-func NewPlanRepo() *PlanRepo {
+func NewPlanRepo(tp port.TimeProvider) *PlanRepo {
 	return &PlanRepo{
-		Id:     0,
-		Data:   make(map[int]*model.Plan),
-		ListId: []int{},
+		Id:           0,
+		Data:         make(map[int]*model.Plan),
+		ListId:       []int{},
+		TimeProvider: tp,
 	}
 }
 func (r *PlanRepo) Create(plan *model.Plan) (*model.Plan, error) {
 	r.m.Lock()
 	defer r.m.Unlock()
-	plan.CreatedAt = time.Now()
-	plan.UpdatedAt = time.Now()
+	plan.CreatedAt = r.Now()
+	plan.UpdatedAt = r.Now()
 	r.Id++
 	plan.ID = r.Id
 	r.Data[plan.ID] = plan
@@ -55,10 +57,20 @@ func (r *PlanRepo) Update(plan *model.Plan) (*model.Plan, error) {
 	if plan.ID == 0 || plan.ID > r.Id || !found {
 		return nil, model.ErrNotFound
 	}
-
-	plan.UpdatedAt = time.Now()
-	r.Data[plan.ID] = plan
+	newPlan := r.Data[plan.ID]
+	newPlan.UpdatedAt = r.Now()
+	newPlan.Name = plan.Name
+	newPlan.Description = plan.Description
+	r.Data[plan.ID] = newPlan
 	return plan, nil
+}
+
+func (r *PlanRepo) Now() time.Time {
+	if r.TimeProvider != nil {
+		return r.TimeProvider.Now()
+	}
+
+	return time.Now()
 }
 
 func (r *PlanRepo) Delete(id int) error {

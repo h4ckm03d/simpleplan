@@ -57,7 +57,7 @@ func main() {
 	app := &application{
 		config:   cfg,
 		logger:   logger,
-		PlanRepo: repo.NewPlanRepo(),
+		PlanRepo: repo.NewPlanRepo(nil),
 	}
 
 	// Declare a HTTP server with some sensible timeout settings, which listens on the

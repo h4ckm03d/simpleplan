@@ -56,6 +56,10 @@ func (r *router) Wrap(m Middleware) {
 func (r *router) Match(req *http.Request) http.Handler {
 	h := r.tree.match(req)
 
+	if h == nil {
+		return nil
+	}
+
 	for _, m := range r.middleware {
 		h = m(h)
 	}

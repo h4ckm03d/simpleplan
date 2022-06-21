@@ -37,13 +37,6 @@ func (app *application) planMutationHandler(w http.ResponseWriter, r *http.Reque
 }
 
 func (app *application) getPlanHandler(w http.ResponseWriter, r *http.Request) error {
-	json.NewEncoder(w).Encode(map[string]string{
-		"status":  "ok",
-		"env":     app.config.env,
-		"version": version,
-		"id":      router.Param(r, "id"),
-	})
-
 	id, err := strconv.Atoi(router.Param(r, "id"))
 	if err != nil {
 		return err
@@ -79,6 +72,10 @@ func (app *application) updatePlanHandler(w http.ResponseWriter, r *http.Request
 }
 
 func (app *application) createPlanHandler(w http.ResponseWriter, r *http.Request) error {
+	if r.ContentLength == 0 {
+		return errors.New("empty body")
+	}
+
 	var plan *model.Plan
 	defer r.Body.Close()
 	if err := json.NewDecoder(r.Body).Decode(&plan); err != nil {
@@ -89,6 +86,8 @@ func (app *application) createPlanHandler(w http.ResponseWriter, r *http.Request
 	if err != nil {
 		return err
 	}
+
+	w.WriteHeader(http.StatusCreated)
 
 	return json.NewEncoder(w).Encode(data)
 }
@@ -110,13 +109,6 @@ func (app *application) getAllPlanHandler(w http.ResponseWriter, r *http.Request
 }
 
 func (app *application) deletePlanHandler(w http.ResponseWriter, r *http.Request) error {
-	json.NewEncoder(w).Encode(map[string]string{
-		"status":  "ok",
-		"env":     app.config.env,
-		"version": version,
-		"id":      router.Param(r, "id"),
-	})
-
 	id, err := strconv.Atoi(router.Param(r, "id"))
 	if err != nil {
 		return err

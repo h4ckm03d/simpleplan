@@ -10,7 +10,7 @@ import (
 
 func TestPlanRepo_Create(t *testing.T) {
 	// Create plan repo
-	r := repo.NewPlanRepo()
+	r := repo.NewPlanRepo(nil)
 
 	// Create plan
 	plan := &model.Plan{
@@ -29,7 +29,7 @@ func TestPlanRepo_Create(t *testing.T) {
 
 func TestPlanRepo_Get(t *testing.T) {
 	// Create plan repo
-	r := repo.NewPlanRepo()
+	r := repo.NewPlanRepo(nil)
 
 	// Create plan
 	plan := &model.Plan{
@@ -57,7 +57,7 @@ func TestPlanRepo_Get(t *testing.T) {
 
 func TestPlanRepo_Update(t *testing.T) {
 	// Create plan repo
-	r := repo.NewPlanRepo()
+	r := repo.NewPlanRepo(nil)
 
 	// Create plan
 	plan := &model.Plan{
@@ -96,7 +96,7 @@ func TestPlanRepo_Update(t *testing.T) {
 func TestPlanRepo_Delete(t *testing.T) {
 
 	// Create plan repo
-	r := repo.NewPlanRepo()
+	r := repo.NewPlanRepo(nil)
 
 	// Create plan
 	plan := &model.Plan{
@@ -129,7 +129,7 @@ func TestPlanRepo_Delete(t *testing.T) {
 func TestPlanRepo_GetAll(t *testing.T) {
 
 	// Create plan repo
-	r := repo.NewPlanRepo()
+	r := repo.NewPlanRepo(nil)
 
 	// Create plan
 	plan := &model.Plan{
