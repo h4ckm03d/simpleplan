@@ -1,4 +1,5 @@
 # Simple Plan Log
+![Coverage](https://img.shields.io/badge/Coverage-12-red)
 
 ## Struktur Direktori
 
