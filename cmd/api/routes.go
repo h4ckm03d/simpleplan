@@ -44,12 +44,14 @@ func errHandler(f func(http.ResponseWriter, *http.Request) error) http.HandlerFu
 			}
 		}
 
-		json.NewEncoder(log.Writer()).Encode(logRequest{
+		if err := json.NewEncoder(log.Writer()).Encode(logRequest{
 			Method:   r.Method,
 			Path:     r.URL.Path,
 			Duration: time.Since(start).Microseconds(),
 			Err:      errMessage,
-		})
+		}); err != nil {
+			log.Fatal(err)
+		}
 	}
 }
 

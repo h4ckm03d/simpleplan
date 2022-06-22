@@ -25,9 +25,7 @@ func Build(routes ...Router) Dispatcher {
 		middleware: make([]Middleware, 0),
 	}
 
-	for i, r := range routes {
-		d.routes[i] = r
-	}
+	copy(d.routes, routes)
 
 	return d
 }
@@ -57,10 +55,8 @@ func (d *dispatcher) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 			return
 		}
 	}
-
-	w.WriteHeader(http.StatusNotFound)
 	// 404 Not Found
-	return
+	w.WriteHeader(http.StatusNotFound)
 }
 
 func (d *dispatcher) Add(r Router) {

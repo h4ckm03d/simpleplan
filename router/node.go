@@ -3,7 +3,6 @@ package router
 import (
 	"context"
 	"net/http"
-	"path"
 	"path/filepath"
 	"strings"
 )
@@ -191,14 +190,4 @@ func (n *node) matchChild(part string, r *http.Request, params map[string]string
 
 	// No match found
 	return nil
-}
-
-// buildPath returns a string representing the entire path
-// from the root to the current node.
-func (n *node) buildPath() string {
-	if n.parent == nil {
-		return n.path
-	}
-
-	return path.Join(n.parent.buildPath(), n.path)
 }

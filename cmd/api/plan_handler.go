@@ -55,7 +55,7 @@ func (app *application) updatePlanHandler(w http.ResponseWriter, r *http.Request
 		return err
 	}
 	var update *model.Plan
-	defer r.Body.Close()
+	defer dclose(r.Body)
 	if err := json.NewDecoder(r.Body).Decode(&update); err != nil {
 		return err
 	}
@@ -76,7 +76,7 @@ func (app *application) createPlanHandler(w http.ResponseWriter, r *http.Request
 	}
 
 	var plan *model.Plan
-	defer r.Body.Close()
+	defer dclose(r.Body)
 	if err := json.NewDecoder(r.Body).Decode(&plan); err != nil {
 		return err
 	}
