@@ -1,6 +1,6 @@
 # Simple Plan Log
 
-## Direktori structure
+## Struktur Direktori
 
 ```shell
 .
