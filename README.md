@@ -1,5 +1,5 @@
 # Simple Plan Log
-![Coverage](https://img.shields.io/badge/Coverage-12-red)
+![Coverage](https://img.shields.io/badge/Coverage-86.5%25-brightgreen)
 
 ## Struktur Direktori
 
