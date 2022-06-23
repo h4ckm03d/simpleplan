@@ -88,19 +88,18 @@ func (r *PlanRepo) Delete(id int) error {
 }
 
 func (r *PlanRepo) GetAll(limit, page int) ([]*model.Plan, error) {
-	r.m.Lock()
-	defer r.m.Unlock()
 	plans := make([]*model.Plan, 0)
 	totalLen := len(r.ListId)
 
 	start := page * limit
 	end := start + limit
-	if start >= totalLen {
-		return plans, nil
+
+	if totalLen < end {
+		end = totalLen
 	}
 
-	if end > totalLen {
-		end = totalLen
+	if start >= totalLen {
+		return plans, nil
 	}
 
 	for ; start < end && start < totalLen; start++ {

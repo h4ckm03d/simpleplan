@@ -153,7 +153,7 @@ func TestPlanRepo_GetAll(t *testing.T) {
 	assert.Equal(t, plans[0].Name, "Test plan")
 
 	// Get all but empty results
-	plans, err = r.GetAll(1, 2)
+	plans, err = r.GetAll(10, 1)
 	assert.NoError(t, err)
 	assert.Equal(t, []*model.Plan{}, plans)
 }
