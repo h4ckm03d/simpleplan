@@ -2,15 +2,26 @@ package repo_test
 
 import (
 	"testing"
+	"time"
 
 	"github.com/h4ckm03d/simpleplan/model"
+	"github.com/h4ckm03d/simpleplan/port"
 	"github.com/h4ckm03d/simpleplan/repo"
 	"github.com/stretchr/testify/assert"
 )
 
+type testTime struct {
+	port.TimeProvider
+}
+
+func (t *testTime) Now() time.Time {
+	now, _ := time.Parse(time.RFC3339, "2006-01-02T15:04:05Z")
+	return now
+}
+
 func TestPlanRepo_Create(t *testing.T) {
 	// Create plan repo
-	r := repo.NewPlanRepo(nil)
+	r := repo.NewPlanRepo(&testTime{})
 
 	// Create plan
 	plan := &model.Plan{

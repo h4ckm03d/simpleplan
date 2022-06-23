@@ -40,8 +40,6 @@ func (r *PlanRepo) Create(plan *model.Plan) (*model.Plan, error) {
 }
 
 func (r *PlanRepo) Get(id int) (*model.Plan, error) {
-	r.m.Lock()
-	defer r.m.Unlock()
 	plan, ok := r.Data[int(id)]
 	if !ok {
 		return nil, model.ErrNotFound
@@ -80,7 +78,7 @@ func (r *PlanRepo) Delete(id int) error {
 		return model.ErrNotFound
 	}
 
-	delete(r.Data, int(id))
+	delete(r.Data, id)
 	// data always sorted because listId is incremental id
 	index := sort.SearchInts(r.ListId, id)
 	r.ListId = append(r.ListId[:index], r.ListId[index+1:]...)
